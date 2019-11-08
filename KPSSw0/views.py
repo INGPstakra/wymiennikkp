@@ -37,7 +37,7 @@ def Get_TPCO():
     else:
         x0=[app.TPCO,app.Tr]
         app.TPCO,app.Tr = simtest(x0,app.TZCO)
-        print('TPCO: ',app.TPCO,'Tr: '.app.Tr)
+        print('TPCO: ',app.TPCO,'Tr: ',app.Tr)
     return
 
 @app.route('/')
