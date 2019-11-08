@@ -39,11 +39,11 @@ def budynek(y,t,params):
 def sim(y0,value,Tzm,Tpco):
     #params Mm Mco Cw ro cw kw Fzco Fzm Tzm Tpco value
     params=[3000,3000,2700,1000,4200,250000,5400000000,288000000,Tzm,Tpco,value]
-    t=np.arange(0., 1, 0.01)
+    t=np.arange(0., 1, 0.1)
     s=ode(wymiennik, y0, t,args=(params,))
     return s[-1]
 
 def simtest(y0,Tzco):
-    t=np.arange(0., 1, 0.01)
+    t=np.arange(0., 1, 0.1)
     s=ode(budynek, y0, t,args=(Tzco,))
     return s[-1]
