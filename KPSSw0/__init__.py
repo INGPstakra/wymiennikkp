@@ -19,7 +19,7 @@ app.value1=1
 
 app.log=True
 app.test=False
-if app.test:
-    app.Tr=0;
+app.simbud=True
+app.Tr=0;
 print(['Tryb testowy',app.test])
 import KPSSw0.views

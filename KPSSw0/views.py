@@ -45,15 +45,20 @@ def Get_FZM():
 
 def Get_TPCO():
     if not app.test:
-        try:
-            print('Try get budynek')
-            urlbud='https://webuiltthiscity.szyszki.de'
-            buddataname='api/T_pcob'
-            buddata=requests.get(''.join([urlbud,'/',buddataname])).json()
-            app.TPCO=float(buddata['Tpcob'])
-        except:
-            print('budynek nie odpowiada')
-            pass
+        if not app.simbud:
+            try:
+                print('Try get budynek')
+                urlbud='https://webuiltthiscity.szyszki.de'
+                buddataname='api/T_pcob'
+                buddata=requests.get(''.join([urlbud,'/',buddataname])).json()
+                app.TPCO=float(buddata['Tpcob'])
+            except:
+                print('budynek nie odpowiada')
+                pass
+        else:
+            x0=[app.TPCO,app.Tr]
+            app.TPCO,app.Tr = simtest(x0,app.TZCO)
+            print('TPCO: ',app.TPCO,'Tr: ',app.Tr)
     else:
         x0=[app.TPCO,app.Tr]
         app.TPCO,app.Tr = simtest(x0,app.TZCO)
@@ -90,6 +95,13 @@ def get_cot():
 def get_mpt():
     return jsonify({'MPTemp': app.TPM})
 
+@app.route('/simbud', methods=['POST'])
+def post_sim():
+    data = request.json
+    app.simbud=data['sim']
+    print(['SIMBUD: ',app.simbud])
+    return jsonify({'SIMBUD: ',str(app.simbud)})
+
 def simthreadstop():
     print('Simulation End')
     app.simthread=None
@@ -106,10 +118,13 @@ def Send_to_database(TZCO,TPM):
     url1='https://anoldlogcabinforsale.szyszki.de/'
     #url2=''
     name='exchanger/log'
-    data={"status": "Unknow","supply_temp": str(TZCO),"returnMPC_temp": str(TPM),"timestamp": str(time)}
-    data=json.dumps(data)
+    status="Unknow"
+    #status="Biggus Dickus and his wife Incontinentia Buttocks"
+    status="Litwo, Ojczyzno moja! ty jesteś jak zdrowie Ile; cię trzeba cenić, ten tylko się dowie,Kto cię stracił.Dziś piękność..."
+    data={"status": status,"supply_temp": str(TZCO),"returnMPC_temp": str(TPM),"timestamp": str(time)}
     print(str(data))
     try:
+        print('TRY SEND')
         requests.post(''.join([url1,name]), json=data)
     except:
         print('Baza danych nie odpowiada')
