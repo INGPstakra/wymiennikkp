@@ -19,12 +19,11 @@ def Get_TZM():
         try:
             print('Try get TZM')
             urlmpc='https://ivegotthepower.szyszki.de'
-            mpcdata=requests.get(''.join([urlbud,'/','mpec/data'])).json()
-            app.TZM = float(mpcdata.WaterTemp)
-            app.value1 = float(mpcdata.WaterPress)
+            mpcdata=requests.get(''.join([urlmpc,'/','mpec/data'])).json()
+            app.TZM = float(mpcdata['WaterTemp'])
+            app.value1 = float(mpcdata['WaterPress'])
         except:
             print('MPC nie odpowiada')
-            pass
     else:
         app.TZM=100
         app.value1=1
@@ -37,10 +36,9 @@ def Get_FZM():
             urlreg='https://selfcontrol.szyszki.de'
             regdataname='controller'
             regdata=requests.get(''.join([urlreg,'/',regdataname])).json()
-            app.value=float(regdata.Value)
+            app.value=float(regdata['Value'])
         except:
             print('controller nie odpowiada')
-            pass
     else:
         app.value=1
     return
@@ -52,7 +50,7 @@ def Get_TPCO():
             urlbud='https://webuiltthiscity.szyszki.de'
             buddataname='api/T_pcob'
             buddata=requests.get(''.join([urlbud,'/',buddataname])).json()
-            app.TPCO=float(buddata.Tpco)
+            app.TPCO=float(buddata['Tpcob'])
         except:
             print('budynek nie odpowiada')
             pass
@@ -100,8 +98,8 @@ def Send_to_database(TZCO,TPM):
     timeurl='https://closingtime.szyszki.de/api/prettytime'
     try:
         print('Try get time')
-        time=json.loads(requests.get(timeurl, timeout=1))
-        time=time.symTime
+        time=json.loads(requests.get(timeurl, timeout=1).content)
+        time=time['symTime']
     except:
         time=0
         print('Server czasu nieodpowiada')
