@@ -20,6 +20,7 @@ app.timeout=0.5
 app.log=True
 app.test=False
 app.simbud=True
+app.mulbydif=1000
 app.Tr=0;
 print(['Tryb testowy',app.test])
 import KPSSw0.views

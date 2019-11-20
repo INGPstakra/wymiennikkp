@@ -164,7 +164,8 @@ def runsim():
         Tzm=app.TZM
         Tpco=app.TPCO
         y0=[app.TZCO,app.TPM]
-        app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
+        TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
+        app.TZCO=app.mulbydif*(TZCO-app.TZCO)+app.TZCO
         print(['Simulation End:',tim()-simstart])
     except:
         pass;
