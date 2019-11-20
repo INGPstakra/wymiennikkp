@@ -4,7 +4,7 @@ The flask application package.
 
 from flask import Flask
 app = Flask(__name__)
-app.TZCO=0
+app.TZCO=15
 app.TZM=100
 app.TZCO0=0
 app.FZM=0
