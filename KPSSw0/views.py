@@ -4,11 +4,11 @@ Routes and views for the flask application.
 
 
 from KPSSw0 import app
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import subprocess
 import KPSSw0.module1 as model
 from KPSSw0.module1 import simtest
-
+from timeit import default_timer as tim
 import threading
 import requests
 import copy
@@ -72,14 +72,13 @@ def home():
 
 @app.route('/COTemp', methods=['GET'])
 def get_cot():
+    start=tim()
     jj=jsonify({'COTemp': app.TZCO})
     if app.simthread==None:
-        print('Simulation Start')
         app.simthread = threading.Thread(target=runsim)
         app.simthread.start()
     if app.log:
         if app.sendthread==None:
-            print('Sending Values to Database')
             try:
                 app.sendthread=threading.Thread(target=Send_to_database, args=(copy.copy(app.TZCO),copy.copy(app.TPM),))
                 app.sendthread.start()
@@ -88,25 +87,48 @@ def get_cot():
                 app.sendthread=None
         else:
             print('handle not free')
-    #print('Send?')
+    print(['time:',tim()-start])
     return jj
 
 @app.route('/MPTemp', methods=['GET'])
 def get_mpt():
     return jsonify({'MPTemp': app.TPM})
 
-@app.route('/simbud', methods=['POST'])
+@app.route('/simbud', methods=['GET','POST'])
 def post_sim():
-    data = request.json
-    app.simbud=data['sim']
+    if len(request.args)==0:
+        return jsonify({'SIMBUD: ': str(app.simbud)})
+    try:
+        data = request.json
+        if data == None:
+            try:
+                data = request.values
+                if data == None:
+                    print('SIMBUD FORMAT ERROR')
+                    return jsonify({'SIMBUD: ': 'FORMAT ERROR'})
+            except:
+                print('SIMBUD FORMAT ERROR')
+                return jsonify({'SIMBUD: ': 'FORMAT ERROR'})
+    except:
+        try:
+            data = request.values
+        except:
+            print('SIMBUD FORMAT ERROR')
+            return jsonify({'SIMBUD: ': 'FORMAT ERROR'})
+    if data['sim'].lower()=='true' or data['sim']=='1':
+        app.simbud=True
+    elif data['sim'].lower()=='false' or data['sim']=='0':
+        app.simbud=False
+    else:
+        print('SIMBUD FORMAT ERROR')
+        return jsonify({'SIMBUD: ': 'FORMAT ERROR'})
     print(['SIMBUD: ',app.simbud])
-    return jsonify({'SIMBUD: ',str(app.simbud)})
-
-def simthreadstop():
-    print('Simulation End')
-    app.simthread=None
+    return jsonify({'SIMBUD: ': str(app.simbud)})
+  
 
 def Send_to_database(TZCO,TPM):
+    senstart=tim()
+    print('Sending Values to Database')
     timeurl='https://closingtime.szyszki.de/api/prettytime'
     try:
         print('Try get time')
@@ -120,7 +142,7 @@ def Send_to_database(TZCO,TPM):
     name='exchanger/log'
     status="Unknow"
     #status="Biggus Dickus and his wife Incontinentia Buttocks"
-    status="Litwo, Ojczyzno moja! ty jesteś jak zdrowie Ile; cię trzeba cenić, ten tylko się dowie,Kto cię stracił.Dziś piękność..."
+    #status="Litwo, Ojczyzno moja! ty jesteś jak zdrowie Ile; cię trzeba cenić, ten tylko się dowie,Kto cię stracił.Dziś piękność..."
     data={"status": status,"supply_temp": str(TZCO),"returnMPC_temp": str(TPM),"timestamp": str(time)}
     print(str(data))
     try:
@@ -128,19 +150,28 @@ def Send_to_database(TZCO,TPM):
         requests.post(''.join([url1,name]), json=data)
     except:
         print('Baza danych nie odpowiada')
+    print(['send end: ',tim()-senstart])
     app.sendthread=None
     return
 
 def runsim():
-    Get_TPCO()
-    Get_FZM()
-    Get_TZM()
+    simstart=tim()
+    print('Simulation Start')
+    threads=[]
+    threads.append(threading.Thread(target=Get_TPCO))
+    threads.append(threading.Thread(target=Get_FZM))
+    threads.append(threading.Thread(target=Get_TZM))
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
     value=app.value*app.value1
     Tzm=app.TZM
     Tpco=app.TPCO
     y0=[app.TZCO,app.TPM]
     app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
-    simthreadstop()
+    print(['Simulation End:',tim()-simstart])
+    app.simthread=None
     return
 
 @app.teardown_request
