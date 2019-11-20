@@ -19,7 +19,7 @@ def Get_TZM():
         try:
             print('Try get TZM')
             urlmpc='https://ivegotthepower.szyszki.de'
-            mpcdata=requests.get(''.join([urlmpc,'/','mpec/data'])).json()
+            mpcdata=requests.get(''.join([urlmpc,'/','mpec/data']),timeout=app.timeout).json()
             app.TZM = float(mpcdata['WaterTemp'])
             app.value1 = float(mpcdata['WaterPress'])
         except:
@@ -35,7 +35,7 @@ def Get_FZM():
             print('Try get controller')
             urlreg='https://selfcontrol.szyszki.de'
             regdataname='controller'
-            regdata=requests.get(''.join([urlreg,'/',regdataname])).json()
+            regdata=requests.get(''.join([urlreg,'/',regdataname]), timeout=app.timeout).json()
             app.value=float(regdata['Value'])
         except:
             print('controller nie odpowiada')
@@ -50,7 +50,7 @@ def Get_TPCO():
                 print('Try get budynek')
                 urlbud='https://webuiltthiscity.szyszki.de'
                 buddataname='api/T_pcob'
-                buddata=requests.get(''.join([urlbud,'/',buddataname])).json()
+                buddata=requests.get(''.join([urlbud,'/',buddataname]),timeout=app.timeout).json()
                 app.TPCO=float(buddata['Tpcob'])
             except:
                 print('budynek nie odpowiada')
@@ -77,16 +77,6 @@ def get_cot():
     if app.simthread==None:
         app.simthread = threading.Thread(target=runsim)
         app.simthread.start()
-    if app.log:
-        if app.sendthread==None:
-            try:
-                app.sendthread=threading.Thread(target=Send_to_database, args=(copy.copy(app.TZCO),copy.copy(app.TPM),))
-                app.sendthread.start()
-            except:
-                print('nie udane wysłanie danych')
-                app.sendthread=None
-        else:
-            print('handle not free')
     print(['time:',tim()-start])
     return jj
 
@@ -127,51 +117,69 @@ def post_sim():
   
 
 def Send_to_database(TZCO,TPM):
-    senstart=tim()
-    print('Sending Values to Database')
-    timeurl='https://closingtime.szyszki.de/api/prettytime'
     try:
-        print('Try get time')
-        time=json.loads(requests.get(timeurl, timeout=1).content)
-        time=time['symTime']
+        senstart=tim()
+        print('Sending Values to Database')
+        timeurl='https://closingtime.szyszki.de/api/prettytime'
+        try:
+            print('Try get time')
+            time=json.loads(requests.get(timeurl, timeout=1).content)
+            time=time['symTime']
+        except:
+            time=0
+            print('Server czasu nieodpowiada')
+        url1='https://anoldlogcabinforsale.szyszki.de/'
+        #url2=''
+        name='exchanger/log'
+        status="Unknow"
+        #status="Biggus Dickus and his wife Incontinentia Buttocks"
+        #status="Litwo, Ojczyzno moja! ty jesteś jak zdrowie Ile; cię trzeba cenić, ten tylko się dowie,Kto cię stracił.Dziś piękność..."
+        data={"status": status,"supply_temp": str(TZCO),"returnMPC_temp": str(TPM),"timestamp": str(time)}
+        print(str(data))
+        try:
+            print('TRY SEND')
+            requests.post(''.join([url1,name]), json=data)
+        except:
+            print('Baza danych nie odpowiada')
+        print(['send end: ',tim()-senstart])
     except:
-        time=0
-        print('Server czasu nieodpowiada')
-    url1='https://anoldlogcabinforsale.szyszki.de/'
-    #url2=''
-    name='exchanger/log'
-    status="Unknow"
-    #status="Biggus Dickus and his wife Incontinentia Buttocks"
-    #status="Litwo, Ojczyzno moja! ty jesteś jak zdrowie Ile; cię trzeba cenić, ten tylko się dowie,Kto cię stracił.Dziś piękność..."
-    data={"status": status,"supply_temp": str(TZCO),"returnMPC_temp": str(TPM),"timestamp": str(time)}
-    print(str(data))
-    try:
-        print('TRY SEND')
-        requests.post(''.join([url1,name]), json=data)
-    except:
-        print('Baza danych nie odpowiada')
-    print(['send end: ',tim()-senstart])
-    app.sendthread=None
+        pass
+    finally:
+        app.sendthread=None
     return
 
 def runsim():
-    simstart=tim()
-    print('Simulation Start')
-    threads=[]
-    threads.append(threading.Thread(target=Get_TPCO))
-    threads.append(threading.Thread(target=Get_FZM))
-    threads.append(threading.Thread(target=Get_TZM))
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
-    value=app.value*app.value1
-    Tzm=app.TZM
-    Tpco=app.TPCO
-    y0=[app.TZCO,app.TPM]
-    app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
-    print(['Simulation End:',tim()-simstart])
-    app.simthread=None
+    try:
+        simstart=tim()
+        print('Simulation Start')
+        threads=[]
+        threads.append(threading.Thread(target=Get_TPCO))
+        threads.append(threading.Thread(target=Get_FZM))
+        threads.append(threading.Thread(target=Get_TZM))
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        value=app.value*app.value1
+        Tzm=app.TZM
+        Tpco=app.TPCO
+        y0=[app.TZCO,app.TPM]
+        app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
+        print(['Simulation End:',tim()-simstart])
+    except:
+        pass;
+    finally:
+        if app.log:
+            if app.sendthread==None:
+                try:
+                    app.sendthread=threading.Thread(target=Send_to_database, args=(copy.copy(app.TZCO),copy.copy(app.TPM),))
+                    app.sendthread.start()
+                except:
+                    print('nie udane wysłanie danych')
+                    app.sendthread=None
+            else:
+                print('handle not free')
+        app.simthread=None
     return
 
 @app.teardown_request

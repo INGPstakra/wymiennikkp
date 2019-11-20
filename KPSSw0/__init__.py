@@ -16,7 +16,7 @@ app.value=1
 app.simthread=None
 app.sendthread=None
 app.value1=1
-
+app.timeout=0.5
 app.log=True
 app.test=False
 app.simbud=True
