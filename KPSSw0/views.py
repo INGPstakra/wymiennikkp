@@ -116,6 +116,36 @@ def post_sim():
     return jsonify({'SIMBUD: ': str(app.simbud)})
   
 
+@app.route('/mul', methods=['GET','POST'])
+def post_mul():
+    if len(request.args)==0:
+        return jsonify({'mulbydif: ': str(app.mulbydif)})
+    try:
+        data = request.json
+        if data == None:
+            try:
+                data = request.values
+                if data == None:
+                    print('mulbydif FORMAT ERROR')
+                    return jsonify({'mulbydif: ': 'FORMAT ERROR'})
+            except:
+                print('mulbydif FORMAT ERROR')
+                return jsonify({'mulbydif: ': 'FORMAT ERROR'})
+    except:
+        try:
+            data = request.values
+        except:
+            print('mulbydif FORMAT ERROR')
+            return jsonify({'mulbydif: ': 'FORMAT ERROR'})
+    try:
+        app.mulbydif=float(data['mul']);
+    except:
+        print('mulbydif FORMAT ERROR')
+        return jsonify({'mulbydif: ': 'FORMAT ERROR'})
+    print(['mulbydif: ',app.simbud])
+    return jsonify({'mulbydif: ': str(app.mulbydif)})
+  
+
 def Send_to_database(TZCO,TPM):
     try:
         senstart=tim()
