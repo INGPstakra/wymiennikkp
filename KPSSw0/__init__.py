@@ -19,8 +19,8 @@ app.value1=1
 app.timeout=0.5
 app.log=True
 app.test=False
-app.simbud=True
+app.simbud=False
 app.mulbydif=1000000
-app.Tr=0;
+app.Tr=20;
 print(['Tryb testowy',app.test])
 import KPSSw0.views
