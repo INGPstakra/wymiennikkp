@@ -156,7 +156,7 @@ def Send_to_database(TZCO,TPM):
             time=0
             print('Server czasu nieodpowiada')
         url1='https://anoldlogcabinforsale.szyszki.de/'
-        #url2=''
+        url2='https://layanotherlogonthefire/szyszki.de'
         name='exchanger/log'
         status="Unknow"
         #status="Biggus Dickus and his wife Incontinentia Buttocks"
@@ -167,7 +167,12 @@ def Send_to_database(TZCO,TPM):
             print('TRY SEND')
             requests.post(''.join([url1,name]), json=data)
         except:
-            print('Baza danych nie odpowiada')
+            print('Baza danych 1 nie odpowiada')
+        try:
+            print('TRY SEND')
+            requests.post(''.join([url2,name]), json=data)
+        except:
+            print('Baza danych 2 nie odpowiada')
         print(['send end: ',tim()-senstart])
     except:
         pass
@@ -192,7 +197,7 @@ def runsim():
         Tpco=app.TPCO
         y0=[app.TZCO,app.TPM]
         TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
-        app.TZCO=(app.mulbydif*(TZCO-Tpco))+y0[0]
+        app.TZCO=(app.mulbydif*(TZCO-Tpco))+Tpco
         print(['Simulation End:',tim()-simstart])
     except:
         pass;
