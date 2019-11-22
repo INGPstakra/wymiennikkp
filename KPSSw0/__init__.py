@@ -22,20 +22,15 @@ app.timeout=0.5
 app.log=True
 app.test=False
 app.simbud=False
-app.mulbydif=100000000
+app.mulbydif=2006
+app.i=0
 app.Tr=20;
 print(['Tryb testowy',app.test])
 import KPSSw0.views
 
 def sim():
     while True:
-        timeurl='https://closingtime.szyszki.de/api/details'
-        try:
-            print('Try get speed')
-            time=json.loads(requests.get(timeurl, timeout=0.5).content)
-            app.mulbydif=time['speed']*100000
-        except:
-            pass
+        app.i=app.i+1
         KPSSw0.views.runsim()
 
 app.simthread = threading.Thread(target=sim)

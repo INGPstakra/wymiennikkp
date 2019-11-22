@@ -23,7 +23,7 @@ def budynek(y,t,params):
     Tpco,Tr = y
     mh=3000
     ch=2700
-    Fcob=144000
+    Fcob=0.01
     kh=12000
     ro=1000
     cw=4200
@@ -36,10 +36,10 @@ def budynek(y,t,params):
     return [dTpco,dTr]
 
 
-def sim(y0,value,Tzm,Tpco):
+def sim(y0,value,Tzm,Tpco,time):
     #params Mm Mco Cw ro cw kw Fzco Fzm Tzm Tpco value
-    params=[3000,3000,2700,1000,4200,250000,5400000000,288000000,Tzm,Tpco,value]
-    t=np.arange(0., 1, 0.1)
+    params=[3000,3000,2700,1000,4200,250000,41.6,22.2,Tzm,Tpco,value]
+    t=np.arange(0., time, 0.1)
     s=ode(wymiennik, y0, t,args=(params,))
     return s[-1]
 

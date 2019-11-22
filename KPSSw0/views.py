@@ -43,6 +43,15 @@ def Get_FZM():
         app.value=1
     return
 
+def Get_speed():
+    timeurl='https://closingtime.szyszki.de/api/details'
+    try:
+        print('Try get speed')
+        time=json.loads(requests.get(timeurl, timeout=0.5).content)
+        app.mulbydif=time['speed']*1
+    except:
+        print('Speed NOT FOUND')
+
 def Get_TPCO():
     if not app.test:
         if not app.simbud:
@@ -188,6 +197,9 @@ def runsim():
         threads.append(threading.Thread(target=Get_TPCO))
         threads.append(threading.Thread(target=Get_FZM))
         threads.append(threading.Thread(target=Get_TZM))
+        if app.i>10:
+            threads.append(threading.Thread(target=Get_speed))
+            app.i=0
         for t in threads:
             t.start()
         for t in threads:
@@ -196,8 +208,8 @@ def runsim():
         Tzm=app.TZM
         Tpco=app.TPCO
         y0=[app.TZCO,app.TPM]
-        TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco)
-        app.TZCO=(app.mulbydif*(TZCO-Tpco))+Tpco
+        app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,1)
+        #app.TZCO=(app.mulbydif*(TZCO-Tpco))+Tpco
         print(['Simulation End:',tim()-simstart])
     except:
         pass;
