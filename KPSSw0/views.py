@@ -74,9 +74,6 @@ def home():
 def get_cot():
     start=tim()
     jj=jsonify({'COTemp': app.TZCO})
-    if app.simthread==None:
-        app.simthread = threading.Thread(target=runsim)
-        app.simthread.start()
     print(['time:',tim()-start])
     return jj
 
