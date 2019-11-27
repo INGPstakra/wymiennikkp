@@ -208,10 +208,14 @@ def runsim():
         Tzm=app.TZM
         Tpco=app.TPCO
         y0=[app.TZCO,app.TPM]
-        app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,1)
+        if app.mulbydif<10:
+            app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
+        else:
+            app.TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
         #app.TZCO=(app.mulbydif*(TZCO-Tpco))+Tpco
         print(['Simulation End:',tim()-simstart])
     except:
+        print('sim fail')
         pass;
     finally:
         if app.log:

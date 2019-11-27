@@ -26,6 +26,8 @@ app.mulbydif=2006
 app.i=0
 app.Tr=20;
 print(['Tryb testowy',app.test])
+print(['SimBud',app.simbud])
+print(['speed',app.mulbydif])
 import KPSSw0.views
 
 def sim():
