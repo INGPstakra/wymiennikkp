@@ -37,7 +37,7 @@ def Get_FZM():
             urlreg='https://selfcontrol.szyszki.de'
             regdataname='controller'
             regdata=requests.get(''.join([urlreg,'/',regdataname]), timeout=app.timeout).json()
-            app.value=float(regdata['Value'])
+            app.value=float(regdata['valve'])
         except:
             print('controller nie odpowiada')
     else:
@@ -61,7 +61,7 @@ def Get_TPCO():
                 urlbud='https://webuiltthiscity.szyszki.de'
                 buddataname='api/T_pcob'
                 buddata=requests.get(''.join([urlbud,'/',buddataname]),timeout=app.timeout).json()
-                app.TPCO=float(buddata['Tpcob'])
+                app.TPCO=float(buddata['T_pcob'])
             except:
                 print('budynek nie odpowiada')
                 pass
