@@ -211,11 +211,13 @@ def runsim():
         value=app.value*app.value1
         Tzm=app.TZM
         Tpco=app.TPCO
+        app.TPM=Tzm
         y0=[app.TZCO,app.TPM]
         if app.mulbydif<10:
             TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
         else:
-            TZCO,app.TPM,Tpco,Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
+            TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
+        print('TZCO: '+str(TZCO)+',TPM: '+str(app.TPM))
         if TZCO>95:
             app.TZCO=90+random.normalvariate(0,2)
         else:

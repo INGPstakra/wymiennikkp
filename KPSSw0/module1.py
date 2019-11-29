@@ -73,8 +73,10 @@ def sim2(y0,value,Tzm,Tpco,Tr,time):
     #params Mm Mco Cw ro cw kw Fzco Fzm Tzm Tpco value
     y0=[y0[0],y0[1],Tpco,Tr]
     y0=np.array(y0)
-    params=[3000,3000,2700,1000,4200,250000,0.023,0.042,Tzm,Tpco,value]
-    t=np.arange(0., time, 0.1)
+    params=[3000,3000,2700,1000,4200,250000,23,42,Tzm,Tpco,value]
+    krok=0.05
+    t=np.arange(0., time+krok, krok)
+    #print(t)
     s=ode(wymiennikz, y0, t,args=(params,))
     return s[-1]
 
