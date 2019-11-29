@@ -13,6 +13,7 @@ import threading
 import requests
 import copy
 import json
+import random
 
 def Get_TZM():
     if not app.test:
@@ -48,7 +49,7 @@ def Get_speed():
     try:
         print('Try get speed')
         time=json.loads(requests.get(timeurl, timeout=0.5).content)
-        app.mulbydif=time['speed']*1
+        app.mulbydif=double(time['speed'])
     except:
         print('Speed NOT FOUND')
 
@@ -209,9 +210,11 @@ def runsim():
         Tpco=app.TPCO
         y0=[app.TZCO,app.TPM]
         if app.mulbydif<10:
-            app.TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
+            TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
         else:
-            app.TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
+            TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
+        if TZCO>95:
+            app.TZCO=90+random.normalvariate(0,2)
         #app.TZCO=(app.mulbydif*(TZCO-Tpco))+Tpco
         print(['Simulation End:',tim()-simstart])
     except:
