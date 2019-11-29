@@ -215,6 +215,8 @@ def runsim():
             TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
         if TZCO>95:
             app.TZCO=90+random.normalvariate(0,2)
+        else:
+            app.TZCO=TZCO
         #app.TZCO=(app.mulbydif*(TZCO-Tpco))+Tpco
         print(['Simulation End:',tim()-simstart])
     except:
