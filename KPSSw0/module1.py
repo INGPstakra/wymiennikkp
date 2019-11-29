@@ -39,7 +39,7 @@ def wymiennikz(y,t,params):
     Tzco,Tpm,Tpco,Tr = y
     mh=3000
     ch=2700
-    Fcob=0.011
+    Fcob=11
     kh=12000
     ke=15000
     cb=1000
@@ -63,7 +63,7 @@ def wymiennikz(y,t,params):
 def sim(y0,value,Tzm,Tpco,time):
     #params Mm Mco Cw ro cw kw Fzco Fzm Tzm Tpco value
     y0=np.array(y0)
-    params=[3000,3000,2700,1000,4200,250000,0.023,0.042,Tzm,Tpco,value]
+    params=[3000,3000,2700,1000,4200,250000,23,42,Tzm,Tpco,value]
     t=np.arange(0., 1, 0.1)
     s=ode(wymiennik, y0, t,args=(params,))
     w=(s[-1]-y0)*time+y0

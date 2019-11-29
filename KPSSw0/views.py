@@ -201,7 +201,8 @@ def runsim():
         threads.append(threading.Thread(target=Get_FZM))
         threads.append(threading.Thread(target=Get_TZM))
         if app.i>10:
-            threads.append(threading.Thread(target=Get_speed))
+            if app.speed:
+                threads.append(threading.Thread(target=Get_speed))
             app.i=0
         for t in threads:
             t.start()
@@ -214,7 +215,7 @@ def runsim():
         if app.mulbydif<10:
             TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
         else:
-            TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
+            TZCO,app.TPM,Tpco,Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
         if TZCO>95:
             app.TZCO=90+random.normalvariate(0,2)
         else:
