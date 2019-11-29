@@ -23,7 +23,7 @@ app.time=0
 app.log=True
 app.test=False
 app.simbud=False
-app.mulbydif=2006
+app.mulbydif=700
 app.i=0
 app.Tr=20;
 print(['Tryb testowy',app.test])
