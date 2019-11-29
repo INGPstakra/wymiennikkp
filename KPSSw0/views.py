@@ -163,13 +163,15 @@ def Send_to_database(TZCO,TPM):
             time=json.loads(requests.get(timeurl, timeout=1).content)
             time=time['symTime']
         except:
-            time=0
             print('Server czasu nieodpowiada')
         url1='https://anoldlogcabinforsale.szyszki.de/'
-        url2='https://layanotherlogonthefire/szyszki.de'
+        url2='https://layanotherlogonthefire.szyszki.de/'
         name='exchanger/log'
-        status="Unknow"
-        #status="Biggus Dickus and his wife Incontinentia Buttocks"
+        status="running"
+        if app.time==time:
+            return
+        else:
+            app.time=time
         #status="Litwo, Ojczyzno moja! ty jesteś jak zdrowie Ile; cię trzeba cenić, ten tylko się dowie,Kto cię stracił.Dziś piękność..."
         data={"status": status,"supply_temp": str(TZCO),"returnMPC_temp": str(TPM),"timestamp": str(time)}
         print(str(data))
