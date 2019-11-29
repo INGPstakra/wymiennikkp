@@ -6,13 +6,13 @@ import requests
 import json
 from flask import Flask
 app = Flask(__name__)
-app.TZCO=15
+app.TZCO=30
 app.TZM=100
-app.TZCO0=15
+app.TZCO0=30
 app.FZM=100
 app.TPM=100
-app.TPCO=15
-app.TPCO0=15
+app.TPCO=30
+app.TPCO0=30
 app.FZCO=0
 app.value=1
 app.simthread=None
