@@ -24,7 +24,7 @@ app.log=True
 app.test=False
 app.simbud=False
 app.speed=True
-app.mulbydif=60
+app.mulbydif=100
 app.i=0
 app.Tr=20;
 print(['Tryb testowy',app.test])
@@ -36,6 +36,8 @@ def sim():
     while True:
         app.i=app.i+1
         KPSSw0.views.runsim()
+        
+        
 
 app.simthread = threading.Thread(target=sim)
 app.simthread.start()

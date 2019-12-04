@@ -23,7 +23,7 @@ def budynek(y,t,params):
     Tpco,Tr = y
     mh=3000
     ch=2700
-    Fcob=0.01
+    Fcob=11
     kh=12000
     ro=1000
     cw=4200
@@ -63,10 +63,11 @@ def wymiennikz(y,t,params):
 def sim(y0,value,Tzm,Tpco,time):
     #params Mm Mco Cw ro cw kw Fzco Fzm Tzm Tpco value
     y0=np.array(y0)
-    params=[3000,3000,2700,1000,4200,250000,23,42,Tzm,Tpco,value]
-    t=np.arange(0., 1, 0.1)
+    params=[3000,3000,2700,1000,4200,250000,0.023,0.042,Tzm,Tpco,value]
+    t=np.arange(0., time, 0.1)
     s=ode(wymiennik, y0, t,args=(params,))
-    w=(s[-1]-y0)*time+y0
+    #w=(s[-1]-y0)*time+y0
+    w=s[-1]
     return w
 
 def sim2(y0,value,Tzm,Tpco,Tr,time):
@@ -80,7 +81,7 @@ def sim2(y0,value,Tzm,Tpco,Tr,time):
     s=ode(wymiennikz, y0, t,args=(params,))
     return s[-1]
 
-def simtest(y0,Tzco):
-    t=np.arange(0., 1, 0.1)
+def simtest(y0,Tzco,time):
+    t=np.arange(0., time, 0.1)
     s=ode(budynek, y0, t,args=(Tzco,))
     return s[-1]

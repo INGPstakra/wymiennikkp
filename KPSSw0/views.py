@@ -67,11 +67,11 @@ def Get_TPCO():
                 pass
         else:
             x0=[app.TPCO,app.Tr]
-            app.TPCO,app.Tr = simtest(x0,app.TZCO)
+            app.TPCO,app.Tr = simtest(x0,app.TZCO,app.mulbydif)
             print('TPCO: ',app.TPCO,'Tr: ',app.Tr)
     else:
         x0=[app.TPCO,app.Tr]
-        app.TPCO,app.Tr = simtest(x0,app.TZCO)
+        app.TPCO,app.Tr = simtest(x0,app.TZCO,app.mulbydif)
         print('TPCO: ',app.TPCO,'Tr: ',app.Tr)
     return
 
@@ -213,10 +213,11 @@ def runsim():
         Tpco=app.TPCO
         app.TPM=Tzm
         y0=[app.TZCO,app.TPM]
-        if app.mulbydif<10:
-            TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
-        else:
-            TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
+        TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
+        #if app.mulbydif<10:
+        #    TZCO,app.TPM = model.sim(y0,value,Tzm,Tpco,app.mulbydif)
+        #else:
+        #    TZCO,app.TPM,app.Tpco,app.Tr = model.sim2(y0,value,Tzm,Tpco,app.Tr,app.mulbydif)
         print('TZCO: '+str(TZCO)+',TPM: '+str(app.TPM))
         if TZCO>95:
             app.TZCO=90+random.normalvariate(0,2)
