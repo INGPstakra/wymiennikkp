@@ -24,7 +24,7 @@ app.log=True
 app.test=False
 app.simbud=False
 app.speed=True
-app.mulbydif=100
+app.mulbydif=2000
 app.i=0
 app.Tr=20;
 print(['Tryb testowy',app.test])
