@@ -212,6 +212,8 @@ def runsim():
             t.start()
         for t in threads:
             t.join()
+        if app.mulbydif<=0:
+            return
         value=app.value*app.value1
         Tzm=app.TZM
         Tpco=app.TPCO
