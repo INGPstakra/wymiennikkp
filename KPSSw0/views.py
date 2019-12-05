@@ -23,6 +23,8 @@ def Get_TZM():
             mpcdata=requests.get(''.join([urlmpc,'/','mpec/data']),timeout=app.timeout).json()
             app.TZM = float(mpcdata['WaterTemp'])
             app.value1 = float(mpcdata['WaterPress'])
+            if app.value1<0:
+                app.value1=0
         except:
             print('MPC nie odpowiada')
     else:
@@ -38,6 +40,8 @@ def Get_FZM():
             regdataname='controller'
             regdata=requests.get(''.join([urlreg,'/',regdataname]), timeout=app.timeout).json()
             app.value=float(regdata['valve'])
+            if app.value<0:
+                app.value=0
         except:
             print('controller nie odpowiada')
     else:
